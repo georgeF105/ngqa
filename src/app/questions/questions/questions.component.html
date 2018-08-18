@@ -1,0 +1,9 @@
+<p>
+  questions works!
+</p>
+<div *ngIf="questions$ | async as questions">
+  <div
+  *ngFor="let question of questions">
+    {{ question.question }}
+  </div>
+</div>

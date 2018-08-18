@@ -10,6 +10,15 @@ const routes: Routes = [
       {
         path: 'question',
         loadChildren: './questions/question-details/question-details.module#QuestionDetailsModule'
+      },
+      {
+        path: 'questions',
+        loadChildren: './questions/questions/questions.module#QuestionsModule'
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'questions'
       }
     ]
   }
