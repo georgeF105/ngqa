@@ -1,3 +1,4 @@
-<p>
-  question-details works!
-</p>
+<div
+  *ngIf="question$ | async as question">
+  {{ question.question }}
+</div>

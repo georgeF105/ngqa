@@ -1,9 +1,7 @@
-<p>
-  questions works!
-</p>
 <div *ngIf="questions$ | async as questions">
-  <div
-  *ngFor="let question of questions">
-    {{ question.question }}
-  </div>
+  <a
+    *ngFor="let question of questions"
+    [routerLink]="['/question', question.key]">
+    {{question.question}}
+  </a>
 </div>

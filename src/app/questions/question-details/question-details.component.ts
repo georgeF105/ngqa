@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FirebaseService } from '../../database/firebase/firebase.service';
+import { Store, Question } from '../../database';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-question-details',
@@ -6,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./question-details.component.scss']
 })
 export class QuestionDetailsComponent implements OnInit {
+  public question$: Observable<Question>;
 
-  constructor() { }
+  constructor(
+    private _firebaseService: FirebaseService<Store>
+  ) { }
 
   ngOnInit() {
+    this.question$ = this._firebaseService.getChild('questions', 'dummyKey');
   }
-
 }

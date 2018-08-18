@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Question } from '../../database';
+import { Question, Store } from '../../database';
 import { FirebaseService } from '../../database/firebase/firebase.service';
 
 @Component({
@@ -11,15 +11,11 @@ import { FirebaseService } from '../../database/firebase/firebase.service';
 export class QuestionsComponent implements OnInit {
   public questions$: Observable<Array<Question>>;
   constructor(
-    private _firebaseService: FirebaseService
+    private _firebaseService: FirebaseService<Store>
   ) { }
 
   ngOnInit() {
-    this.questions$ = this._firebaseService.getQuestions();
-
-    this.questions$.subscribe(questions => {
-      console.log('got questions', questions);
-    });
+    this.questions$ = this._firebaseService.getChildren('questions');
   }
 
 }
