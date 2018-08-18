@@ -1,0 +1,11 @@
+{
+  "editor.tabSize": 2,
+  "typescript.autoImportSuggestions.enabled": true,
+  "tslint.enable": true,
+  "tslint.run": "onType",
+  "tslint.autoFixOnSave": true,
+  "tslint.configFile": "tslint.json",
+  "cSpell.words": [
+    "ngqa"
+  ]
+}
