@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { database, initializeApp, app } from 'firebase';
-import { Observable, Subject } from 'rxjs';
+import { initializeApp, app } from 'firebase';
+import { Observable, Subject, OperatorFunction } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
 const options = {
@@ -14,74 +14,67 @@ const options = {
 
 export type Key = string;
 
-export interface FirebaseStoreItem {
+export type LinkedItem<S> = {
+  [N in keyof S]?: Key | Directory<Key>;
+};
+
+export interface FirebaseItem {
   key: Key;
 }
 
 export interface Directory<T> {
   [key: string]: T;
 }
-export interface FirebaseStoreBase { [key: string]: Directory<any>; }
+
+export interface ReadOptions {
+  sortBy?: any;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService<S extends FirebaseStoreBase> {
+export class FirebaseService<S> {
   private app: app.App;
 
   constructor() {
     this.app = initializeApp(options, 'NGQA');
   }
 
-  public getChildren<P extends keyof S, T extends S[P][Key]>(path: P): Observable<T[]> {
+  public getItem<P1 extends keyof S> (path: [P1], readOptions?: ReadOptions): Observable<S[P1]>;
+  public getItem<
+    P1 extends keyof S,
+    P2 extends keyof S[P1],
+    T extends S[P1][P2]> (path: [P1, P2], readOptions?: ReadOptions): Observable<T>;
+  public getItem<
+    P1 extends keyof S,
+    P2 extends keyof S[P1],
+    P3 extends keyof S[P1][P2],
+    T extends S[P1][P2][P3]> (path: [P1, P2, P3], readOptions?: ReadOptions): Observable<T>;
+
+  public getItem<P extends Array<string>, T> (path: P): Observable<T> {
     const result$ = new Subject<T>();
-    const ref = this.app.database().ref(path as string);
-    ref.on('value', snapshot => {
-      const val = snapshot.val() as Directory<T>;
-      const result = Object.keys(val).map(key => {
-        return {
-          key,
-          ...(val[key] as Object)
-        };
-      }) as T;
+    const fullPath = path.join('/');
+    const ref = this.app.database().ref(fullPath);
 
-      result$.next(result);
-    });
+    ref.on('value', snapshot => result$.next(snapshot.val()));
 
-    return result$.pipe(
-      tap(
-        val => console.log('got val', val),
-        err => console.error('got error', err),
-        () => {
-          console.log('closing listener for', path);
-          ref.off('value');
-        }
-      )
-    );
+    return result$.pipe(tap({
+      complete: () => {
+        ref.off('value');
+        console.log('ref off', path);
+      }
+    }));
   }
 
-  public getChild<P extends keyof S, T extends S[P][Key]>(path: P, key: Key): Observable<T> {
-    const result$ = new Subject<T>();
-    const ref = this.app.database().ref(path as string).child(key);
-    ref.on('value', snapshot => {
-      const val = snapshot.val() as T;
-      const result = {
-        key,
-        ...(val as Object)
-      } as T;
-
-      result$.next(result);
-    });
-
-    return result$.pipe(
-      tap(
-        val => console.log('got child val', val),
-        err => console.error('got child error', err),
-        () => {
-          console.log('closing listener for', path);
-          ref.off('value');
-        }
-      )
-    );
+  public toArray<T extends FirebaseItem>(): OperatorFunction<Directory<T>, Array<T>> {
+    return source => source.pipe(
+      map(directory => Object.keys(directory).map(key => {
+        const value = directory[key];
+        return {
+          key,
+          ...(value as Object)
+        } as T;
+      }
+    )));
   }
 }

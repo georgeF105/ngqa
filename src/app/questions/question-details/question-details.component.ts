@@ -16,6 +16,6 @@ export class QuestionDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.question$ = this._firebaseService.getChild('questions', 'dummyKey');
+    this.question$ = this._firebaseService.getItem(['questions', 'dummyKey']);
   }
 }
