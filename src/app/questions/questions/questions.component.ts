@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Question, Store } from '../../database';
-import { FirebaseService, Directory } from '../../database/firebase/firebase.service';
-import { take, takeUntil, map } from 'rxjs/operators';
+import { FirebaseService, toList } from '../../database/firebase/firebase.service';
+import { takeUntil } from 'rxjs/operators';
 
-type thing = keyof Store;
 
 @Component({
   selector: 'app-questions',
@@ -21,7 +20,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.questions$ = this._firebaseService.getItem(['questions']).pipe(
       takeUntil(this._destroyed$),
-      this._firebaseService.toArray()
+      toList()
     );
   }
 

@@ -65,16 +65,16 @@ export class FirebaseService<S> {
       }
     }));
   }
+}
 
-  public toArray<T extends FirebaseItem>(): OperatorFunction<Directory<T>, Array<T>> {
-    return source => source.pipe(
-      map(directory => Object.keys(directory).map(key => {
-        const value = directory[key];
-        return {
-          key,
-          ...(value as Object)
-        } as T;
-      }
-    )));
-  }
+export function toList<T extends FirebaseItem>(): OperatorFunction<Directory<T>, Array<T>> {
+  return source => source.pipe(
+    map(directory => Object.keys(directory).map(key => {
+      const value = directory[key];
+      return {
+        key,
+        ...(value as Object)
+      } as T;
+    }
+  )));
 }
