@@ -15,10 +15,14 @@ const setupGraphQLServer = () => {
     graphqlExpress({ schema, context: {} })
   );
 
+  const endpointURL = true
+    ? '/ngqa-bad8d/us-central1/api/graphql'
+    : '/api/graphql';
+
   // /api/graphiql
   graphQLServer.use(
     '/graphiql',
-    graphiqlExpress({ endpointURL: '/ngqa-bad8d/us-central1/api/graphql' })
+    graphiqlExpress({ endpointURL })
   );
 
   // /api/schema
