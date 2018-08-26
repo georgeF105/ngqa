@@ -1,0 +1,7 @@
+<div *ngIf="questions$ | async as questions">
+  <a
+    *ngFor="let question of questions"
+    [routerLink]="['/question', question.key]">
+    {{question.question}}
+  </a>
+</div>
