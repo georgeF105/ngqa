@@ -54,13 +54,38 @@ export class FirebaseService<S> {
   public getItem<P extends Array<string>, T> (path: P): Observable<T> {
     const result$ = new Subject<T>();
 
-    const fullPath = path.join('/');
-    const ref = this.app.database().ref(fullPath);
+    const ref = this.getRef(path);
     ref.on('value', snapshot => result$.next(snapshot.val()));
 
     return result$.pipe(
       finalize(() => ref.off('value'))
     );
+  }
+
+  public addItem<
+    P1 extends keyof S,
+    K extends keyof S[P1] & Key,
+    D extends S[P1] & Directory<S[P1][K]>,
+    I extends D[K]> (path: [P1], item: I): Promise<K>;
+  public addItem<
+    P1 extends keyof S,
+    P2 extends keyof S[P1],
+    K extends keyof S[P1][P2] & Key,
+    D extends S[P1] & Directory<S[P1][P2][K]>,
+    I extends D[K]> (path: [P1, P2], item: I): Promise<K>;
+  public addItem<P extends Array<string>> (path: P, item: any): Promise<Key> {
+    return new Promise((resolve, reject) => {
+      this.getRef(path).push(item).then(val => {
+        resolve(val.key);
+      }, err => {
+        reject(err);
+      });
+    });
+  }
+
+  private getRef (path: Array<Key>): firebase.database.Reference {
+    const fullPath = path.join('/');
+    return this.app.database().ref(fullPath);
   }
 }
 
