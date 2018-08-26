@@ -3,28 +3,37 @@ import { makeExecutableSchema } from 'graphql-tools';
 import resolvers from '../data/resolvers';
 
 const schema = `
-type Author {
-  id: Int! # the ! means that every author object _must_ have an id
-  firstName: String
-  lastName: String
-  posts: [Post] # the list of Posts by this author
+type Question {
+  id: String!
+  question: String!
+  user: User
+  answers: [Answer]
 }
-type Post {
-  id: Int!
-  title: String
-  author: Author
+type Answer {
+  id: String!
+  body: String
+  user: User
   votes: Int
+}
+type User {
+  id: String!
+  name: String
+  email: String
 }
 # the schema allows the following query:
 type Query {
-  posts: [Post]
-  author(id: Int!): Author
+  questions: [Question]
+  question(id: String!): Question
 }
 # this schema allows the following mutation:
 type Mutation {
-  upvotePost (
-    postId: Int!
-  ): Post
+  upvoteAnswer (
+    answerId: Int!
+  ): Answer
+  answerQuestion (
+    questionId: String!,
+    answer: String
+  ): Answer
 }
 `;
 
