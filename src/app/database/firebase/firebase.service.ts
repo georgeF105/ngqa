@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { initializeApp, app } from 'firebase';
 import { Observable, Subject, OperatorFunction } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, refCount, share, finalize } from 'rxjs/operators';
 
 const options = {
   apiKey: 'AIzaSyCMmdgK3sCxCVBNY-vydP6zTmsfSd8ApZY',
@@ -53,17 +53,14 @@ export class FirebaseService<S> {
 
   public getItem<P extends Array<string>, T> (path: P): Observable<T> {
     const result$ = new Subject<T>();
+
     const fullPath = path.join('/');
     const ref = this.app.database().ref(fullPath);
-
     ref.on('value', snapshot => result$.next(snapshot.val()));
 
-    return result$.pipe(tap({
-      complete: () => {
-        ref.off('value');
-        console.log('ref off', path);
-      }
-    }));
+    return result$.pipe(
+      finalize(() => ref.off('value'))
+    );
   }
 }
 

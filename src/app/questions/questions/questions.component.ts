@@ -25,6 +25,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('questions destroyed');
     this._destroyed$.next();
   }
 }
