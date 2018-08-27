@@ -4,19 +4,19 @@ import resolvers from '../data/resolvers';
 
 const schema = `
 type Question {
-  id: String!
-  question: String!
+  key: String!
+  body: String!
   user: User
   answers: [Answer]
 }
 type Answer {
-  id: String!
+  key: String!
   body: String
   user: User
   votes: Int
 }
 type User {
-  id: String!
+  key: String!
   name: String
   email: String
 }

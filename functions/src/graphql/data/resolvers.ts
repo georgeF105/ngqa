@@ -1,3 +1,5 @@
+import { getItem, toList } from './database';
+
 const questions = [
   { id: 'abc', question: 'dummy question Tom', answers: ['A'], user: '1' },
   { id: 'xyz', question: 'dummy question Sashko', answers: ['A', 'C'], user: '2' }
@@ -17,10 +19,11 @@ const users = [
 const resolveFunctions = {
   Query: {
     questions() {
-      return questions;
+      return getItem(['questions'])
+        .then(questionsMap => toList(questionsMap));
     },
     question(_, { id }) {
-      return questions.find(question => question.id === id);
+      return getItem(['questions', id]);
     }
   },
   Mutation: {
@@ -35,15 +38,17 @@ const resolveFunctions = {
   },
   Question: {
     answers(question) {
-      return answers.filter(answer => question.answers.includes(answer.id));
+      return getItem(['answers'])
+        .then(a => toList(a))
+        .then(answerList => answerList.filter(answer => question.answers.includes(answer.key)));
     },
     user(question) {
-      return users.find(user => user.id === question.user);
+      return getItem(['users', question.user]);
     }
   },
   Answer: {
     user(answer) {
-      return users.find(user => user.id === answer.user);
+      return getItem(['users', answer.user]);
     }
   }
 };
