@@ -4,7 +4,7 @@ import { Directory, FirebaseItem } from '../../models';
 
 admin.initializeApp(config().firebase);
 
-function _getItem (path: Array<string>): Promise<any> {
+function getSnapshot (path: Array<string>): Promise<any> {
   const fullPath = path.join('/');
   return new Promise((resolve, reject) => {
     admin.database().ref(fullPath).once('value', snapshot => {
@@ -16,14 +16,14 @@ function _getItem (path: Array<string>): Promise<any> {
 }
 
 export function getItem (path: Array<string>): Promise<any> {
-  return _getItem(path).then(snapshot => ({
+  return getSnapshot(path).then(snapshot => ({
     ...snapshot.val(),
     key: snapshot.key
   }));
 }
 
 export function getList (path: Array<string>): Promise<Array<any>> {
-  return _getItem(path).then(snapshot => toList(snapshot.val()));
+  return getSnapshot(path).then(snapshot => toList(snapshot.val()));
 }
 
 function toList<T extends FirebaseItem> (map: Directory<T>): Array<T> {
