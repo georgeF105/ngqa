@@ -4,19 +4,29 @@ import { Directory, FirebaseItem } from '../../models';
 
 admin.initializeApp(config().firebase);
 
-export function getItem (path: Array<string>): Promise<any> {
+function _getItem (path: Array<string>): Promise<any> {
   const fullPath = path.join('/');
-
   return new Promise((resolve, reject) => {
     admin.database().ref(fullPath).once('value', snapshot => {
-      resolve(snapshot.val());
+      resolve(snapshot);
     }, err => {
       reject(err);
     });
   });
 }
 
-export function toList<T extends FirebaseItem> (map: Directory<T>): Array<T> {
+export function getItem (path: Array<string>): Promise<any> {
+  return _getItem(path).then(snapshot => ({
+    ...snapshot.val(),
+    key: snapshot.key
+  }));
+}
+
+export function getList (path: Array<string>): Promise<Array<any>> {
+  return _getItem(path).then(snapshot => toList(snapshot.val()));
+}
+
+function toList<T extends FirebaseItem> (map: Directory<T>): Array<T> {
   return Object.keys(map).map(key => {
     return {
       ...(map[key] as Object),

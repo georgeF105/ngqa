@@ -1,4 +1,4 @@
-import { getItem, toList } from './database';
+import { getItem, getList } from './database';
 
 const questions = [
   { id: 'abc', question: 'dummy question Tom', answers: ['A'], user: '1' },
@@ -19,8 +19,7 @@ const users = [
 const resolveFunctions = {
   Query: {
     questions() {
-      return getItem(['questions'])
-        .then(questionsMap => toList(questionsMap));
+      return getList(['questions']);
     },
     question(_, { id }) {
       return getItem(['questions', id]);
@@ -38,8 +37,7 @@ const resolveFunctions = {
   },
   Question: {
     answers(question) {
-      return getItem(['answers'])
-        .then(a => toList(a))
+      return getList(['answers'])
         .then(answerList => answerList.filter(answer => question.answers.includes(answer.key)));
     },
     user(question) {
