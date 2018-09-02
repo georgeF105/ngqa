@@ -1,4 +1,4 @@
-import { config, database } from 'firebase-functions';
+import { config } from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { Directory, FirebaseItem } from '../../models';
 

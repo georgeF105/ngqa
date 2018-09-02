@@ -3,6 +3,7 @@ import * as express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import schema from './schema';
 import { printSchema } from 'graphql/utilities/schemaPrinter';
+import { config } from 'firebase-functions';
 
 const setupGraphQLServer = () => {
   // setup server
@@ -15,7 +16,8 @@ const setupGraphQLServer = () => {
     graphqlExpress({ schema, context: {} })
   );
 
-  const endpointURL = true
+  const prodMode = !config().firebase;
+  const endpointURL = prodMode
     ? '/ngqa-bad8d/us-central1/api/graphql'
     : '/api/graphql';
 
