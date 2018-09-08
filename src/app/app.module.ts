@@ -4,6 +4,14 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutModule } from './shell/layout/layout.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { reducers, metaReducers } from './reducers';
+import { environment } from '../environments/environment';
+import { HttpClientModule } from '@angular/common/http';
+import { ApolloModule, Apollo } from 'apollo-angular';
+import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
+import { NgrxCacheModule, NgrxCache } from 'apollo-angular-cache-ngrx';
 
 @NgModule({
   declarations: [
@@ -12,9 +20,30 @@ import { LayoutModule } from './shell/layout/layout.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    LayoutModule
+    LayoutModule,
+    StoreModule.forRoot(reducers, { metaReducers }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    HttpClientModule,
+    ApolloModule,
+    HttpLinkModule,
+    NgrxCacheModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    apollo: Apollo,
+    httpLink: HttpLink,
+    ngrxCache: NgrxCache
+  ) {
+    const http = httpLink.create({
+      uri: environment.graphqlUri
+    });
+
+    apollo.create({
+      link: http,
+      cache: ngrxCache.create()
+    });
+  }
+}

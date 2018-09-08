@@ -4,6 +4,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "skipLibCheck": true,
     "declaration": false,
     "module": "es2015",
     "moduleResolution": "node",
@@ -15,7 +16,16 @@
     ],
     "lib": [
       "es2017",
-      "dom"
-    ]
-  }
+      "dom",
+      "esnext.asynciterable"
+    ],
+    "paths": {
+      "@ngqa/models": [
+        "./functions/lib/models"
+      ]
+    }
+  },
+  "includes": [
+    "**/@browser/types/**/*.ts"
+  ]
 }

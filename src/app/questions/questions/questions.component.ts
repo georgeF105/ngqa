@@ -1,31 +1,45 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { Question, Store } from '../../database';
-import { FirebaseService, toList } from '../../database/firebase/firebase.service';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Question } from '@ngqa/models';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+import { map } from 'rxjs/operators';
 
-
+const QUESTIONS_QUERY = gql`{
+  questions {
+    key
+    body
+    answers {
+      key
+      body
+      votes
+    }
+    user {
+      key
+      name
+    }
+  }
+}`;
 @Component({
   selector: 'app-questions',
   templateUrl: './questions.component.html',
   styleUrls: ['./questions.component.scss']
 })
-export class QuestionsComponent implements OnInit, OnDestroy {
+export class QuestionsComponent implements OnInit {
   public questions$: Observable<Array<Question>>;
-  private _destroyed$ = new Subject<void>();
   constructor(
-    private _firebaseService: FirebaseService<Store>
+    private _apollo: Apollo
   ) { }
 
   ngOnInit() {
-    this.questions$ = this._firebaseService.getItem(['questions']).pipe(
-      takeUntil(this._destroyed$),
-      toList()
-    );
+    this.questions$ = this.getQuestions();
   }
 
-  ngOnDestroy(): void {
-    console.log('questions destroyed');
-    this._destroyed$.next();
+  private getQuestions (): Observable<Array<Question>> {
+    return this._apollo.query<{ questions: Array<Question> }>({
+      query: QUESTIONS_QUERY
+    }).pipe(
+      map(result => result.data.questions)
+    );
   }
 }
