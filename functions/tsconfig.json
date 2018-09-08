@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "stripInternal": true,
     "lib": ["es6", "esnext"],
     "module": "commonjs",
     "noImplicitReturns": true,
@@ -10,5 +12,8 @@
   "compileOnSave": true,
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

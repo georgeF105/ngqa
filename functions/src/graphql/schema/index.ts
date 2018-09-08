@@ -1,8 +1,9 @@
 import { makeExecutableSchema } from 'graphql-tools';
 
 import resolvers from '../data/resolvers';
+import { GraphQLSchema } from 'graphql';
 
-const schema = `
+const typeDefs = `
 type Question {
   key: String!
   body: String!
@@ -37,7 +38,7 @@ type Mutation {
 }
 `;
 
-export default makeExecutableSchema({
-  typeDefs: schema,
+export const schema: GraphQLSchema = makeExecutableSchema({
+  typeDefs,
   resolvers
 });

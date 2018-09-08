@@ -1,11 +1,11 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
-import schema from './schema';
+import { schema } from './schema';
 import { printSchema } from 'graphql/utilities/schemaPrinter';
 import { config } from 'firebase-functions';
 
-const setupGraphQLServer = () => {
+export const setupGraphQLServer = (): express.Express => {
   // setup server
   const graphQLServer = express();
 
@@ -16,10 +16,10 @@ const setupGraphQLServer = () => {
     graphqlExpress({ schema, context: {} })
   );
 
-  const prodMode = !config().firebase;
+  const prodMode = config().firebase;
   const endpointURL = prodMode
-    ? '/ngqa-bad8d/us-central1/api/graphql'
-    : '/api/graphql';
+    ? '/api/graphql'
+    : '/ngqa-bad8d/us-central1/api/graphql';
 
   // /api/graphiql
   graphQLServer.use(
@@ -35,5 +35,3 @@ const setupGraphQLServer = () => {
 
   return graphQLServer;
 };
-
-export default setupGraphQLServer;

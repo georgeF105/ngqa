@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 
-import setupGraphQLServer from './graphql';
+import { setupGraphQLServer } from './graphql';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript

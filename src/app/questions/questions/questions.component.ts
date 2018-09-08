@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Question, Store } from '../../database';
+import { Question, Store } from '@ngqa/models';
 import { FirebaseService, toList } from '../../database/firebase/firebase.service';
 import { takeUntil } from 'rxjs/operators';
 
