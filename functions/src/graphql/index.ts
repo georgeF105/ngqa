@@ -4,11 +4,12 @@ import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { schema } from './schema';
 import { printSchema } from 'graphql/utilities/schemaPrinter';
 import { config } from 'firebase-functions';
+import * as cors from 'cors';
 
 export const setupGraphQLServer = (): express.Express => {
   // setup server
   const graphQLServer = express();
-
+  graphQLServer.use(cors());
   // /api/graphql
   graphQLServer.use(
     '/graphql',
