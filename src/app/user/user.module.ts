@@ -13,9 +13,4 @@ import { reducer, FEATURE_NAME } from './user.reducer';
   ],
   declarations: []
 })
-export class UserModule {
-  constructor () {
-
-    console.log('here!!!!');
-  }
-}
+export class UserModule { }

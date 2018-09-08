@@ -1,5 +1,19 @@
 <p>
   header works!
 </p>
-<button
-  (click)="logIn()">Log In</button>
+<ng-container
+  *ngIf="userState$ | async as userState">
+  <span
+    *ngIf="userState.user">Welcome {{userState.user.name}}</span>
+  <span
+    *ngIf="userState.isLoading && !userState.user">Logging in...</span>
+  <span
+    *ngIf="userState.isLoading && userState.user">Logging out...</span>
+  <button
+    *ngIf="!userState.isLoading && !userState.user"
+    (click)="logIn()">Log In</button>
+  <button
+    *ngIf="!userState.isLoading && userState.user"
+    (click)="logOut()">Log Out</button>
+
+</ng-container>
