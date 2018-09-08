@@ -37,6 +37,7 @@ export class FirebaseService<S> {
   private app: app.App;
 
   constructor() {
+    console.log('INIT FB');
     this.app = initializeApp(options, 'NGQA');
   }
 
