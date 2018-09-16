@@ -1,13 +1,15 @@
-<h3>Questions</h3>
-<div
-  *ngIf="questions$ | async as questions">
-  <ul>
-    <li
-      *ngFor="let question of questions">
-      <a
-        [routerLink]="['/question', question.key]">
-        {{question.body}} ({{question.user.name}})
-      </a>
-    </li>
-  </ul>
+<div>
+  <h3>Questions</h3>
+  <div
+    *ngIf="questions$ | async as questions">
+    <ul>
+      <li
+        *ngFor="let question of questions">
+        <a
+          [routerLink]="['/question', question.key]">
+          {{question.body}} ({{question.user.name}})
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
