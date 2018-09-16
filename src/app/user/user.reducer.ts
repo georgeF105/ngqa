@@ -11,7 +11,7 @@ export interface State {
 
 export const initialState: State = {
   user: null,
-  isLoading: false,
+  isLoading: true,
   error: null
 };
 
@@ -19,11 +19,12 @@ export const FEATURE_NAME = 'user';
 
 export function reducer(state = initialState, action: UserActions): State {
   switch (action.type) {
+    case UserActionTypes.GetUserLoginStatus:
     case UserActionTypes.LogInUser:
-      return {
+      return !state.user ? {
         ...state,
         isLoading: true
-      };
+      } : state;
     case UserActionTypes.LogInUserSuccess:
       return {
         user: action.user,

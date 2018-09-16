@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { initializeApp, app, auth } from 'firebase';
 import { User } from '@ngqa/models';
 import { Store } from '@ngrx/store';
-import { LogInUserSuccessAction } from '../user/user.actions';
 
 const options = {
   apiKey: 'AIzaSyCMmdgK3sCxCVBNY-vydP6zTmsfSd8ApZY',
@@ -18,10 +17,6 @@ const options = {
 })
 export class FirebaseService {
   private _app: app.App;
-
-  constructor(
-    private _store: Store<any>
-  ) { }
 
   private _initializeApp (): void {
     if (this._app) {
@@ -52,19 +47,23 @@ export class FirebaseService {
     return this._app.auth().signOut();
   }
 
-  public listenToLogInStatus (): void {
+  public listenToLogInStatus (): Promise<User> {
     this._initializeApp();
-    this._app.auth().onAuthStateChanged(user => {
-      if (user) {
-        user.getIdToken().then(token => {
-          this._store.dispatch(new LogInUserSuccessAction({
-            key: user.uid,
-            token,
-            name: user.displayName,
-            email: user.email
-          }));
-        });
-      }
+    return new Promise((resolve, reject) => {
+      this._app.auth().onAuthStateChanged(user => {
+        if (user) {
+          resolve(user);
+        }
+      });
+    }).then((user: firebase.User) => {
+      return user.getIdToken().then(token => {
+        return {
+          key: user.uid,
+          token,
+          name: user.displayName,
+          email: user.email
+        };
+      });
     });
   }
 }

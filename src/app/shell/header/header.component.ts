@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { LogInUserAction, LogOutUserAction } from '../../user/user.actions';
-import { FirebaseService } from '../../firebase/firebase.service';
+import { LogInUserAction, LogOutUserAction, GetUserLoginStatusAction } from '../../user/user.actions';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -13,12 +12,11 @@ export class HeaderComponent implements OnInit {
   public userState$: Observable<any>;
 
   constructor(
-    private _store: Store<any>,
-    private _firebaseService: FirebaseService
+    private _store: Store<any>
   ) { }
 
   ngOnInit() {
-    this._firebaseService.listenToLogInStatus();
+    this._store.dispatch(new GetUserLoginStatusAction());
     this.userState$ = this._store.select(state => state.user);
   }
 

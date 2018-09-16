@@ -8,12 +8,13 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       {
-        path: 'question',
-        loadChildren: './questions/question-details/question-details.module#QuestionDetailsModule'
+        path: '',
+        pathMatch: 'full',
+        loadChildren: './home/home.module#HomeModule'
       },
       {
-        path: 'questions',
-        loadChildren: './questions/questions/questions.module#QuestionsModule'
+        path: '',
+        loadChildren: './questions/questions.module#QuestionsModule'
       }
     ]
   }

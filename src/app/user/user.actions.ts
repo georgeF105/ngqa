@@ -2,12 +2,17 @@ import { Action } from '@ngrx/store';
 import { User } from '@ngqa/models';
 
 export enum UserActionTypes {
+  GetUserLoginStatus = '[User] Get user login status',
   LogInUser = '[User] Log in user',
   LogInUserSuccess = '[User] Log in user success',
   LogInUserFail = '[User] Log in user fail',
   LogOutUser = '[User] Log out user',
   LogOutUserSuccess = '[User] Log out user success',
   LogOutUserFail = '[User] Log out user fail'
+}
+
+export class GetUserLoginStatusAction implements Action {
+  public readonly type = UserActionTypes.GetUserLoginStatus;
 }
 
 export class LogInUserAction implements Action {
@@ -43,7 +48,8 @@ export class LogOutUserFailAction implements Action {
   readonly type = UserActionTypes.LogOutUserFail;
 }
 
-export type UserActions = LogInUserAction
+export type UserActions = GetUserLoginStatusAction
+  | LogInUserAction
   | LogInUserSuccessAction
   | LogInUserFailAction
   | LogOutUserAction
