@@ -14,6 +14,7 @@ import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { NgrxCacheModule, NgrxCache } from 'apollo-angular-cache-ngrx';
 import { UserModule } from './user/user.module';
 import { EffectsModule } from '@ngrx/effects';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { EffectsModule } from '@ngrx/effects';
     HttpClientModule,
     ApolloModule,
     HttpLinkModule,
-    NgrxCacheModule
+    NgrxCacheModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
