@@ -15,5 +15,9 @@
   <button
     *ngIf="!userState.isLoading && userState.user"
     (click)="logOut()">Log Out</button>
+  <a
+    routerLink="/questions">
+    Questions
+  </a>
 
 </ng-container>

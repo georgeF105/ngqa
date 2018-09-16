@@ -48,6 +48,7 @@ export interface NormalAnswer {
 
 export interface User {
   key: Key;
+  token: string;
   name: string;
   email: string;
 }

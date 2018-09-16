@@ -35,11 +35,15 @@ export class FirebaseService {
     const provider = new auth.GoogleAuthProvider();
     return this._app.auth().signInWithPopup(provider)
       .then(userCredential => {
-        return {
-          key: userCredential.user.uid,
-          name: userCredential.user.displayName,
-          email: userCredential.user.email
-        };
+        return userCredential.user.getIdToken()
+          .then(token => {
+            return {
+              key: userCredential.user.uid,
+              token,
+              name: userCredential.user.displayName,
+              email: userCredential.user.email
+            };
+          });
       });
   }
 
@@ -52,11 +56,14 @@ export class FirebaseService {
     this._initializeApp();
     this._app.auth().onAuthStateChanged(user => {
       if (user) {
-        this._store.dispatch(new LogInUserSuccessAction({
-          key: user.uid,
-          name: user.displayName,
-          email: user.email
-        }));
+        user.getIdToken().then(token => {
+          this._store.dispatch(new LogInUserSuccessAction({
+            key: user.uid,
+            token,
+            name: user.displayName,
+            email: user.email
+          }));
+        });
       }
     });
   }

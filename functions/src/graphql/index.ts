@@ -5,11 +5,14 @@ import { schema } from './schema';
 import { printSchema } from 'graphql/utilities/schemaPrinter';
 import { config } from 'firebase-functions';
 import * as cors from 'cors';
+import { validateFirebaseIdToken } from '../middleware';
 
 export const setupGraphQLServer = (): express.Express => {
   // setup server
   const graphQLServer = express();
   graphQLServer.use(cors());
+  graphQLServer.use(validateFirebaseIdToken);
+
   // /api/graphql
   graphQLServer.use(
     '/graphql',
