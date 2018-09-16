@@ -1,30 +1,8 @@
 import { Injectable } from '@angular/core';
-import { initializeApp, app } from 'firebase';
-import { Observable, Subject, OperatorFunction } from 'rxjs';
-import { tap, map, refCount, share, finalize } from 'rxjs/operators';
-
-const options = {
-  apiKey: 'AIzaSyCMmdgK3sCxCVBNY-vydP6zTmsfSd8ApZY',
-  authDomain: 'ngqa-bad8d.firebaseapp.com',
-  databaseURL: 'https://ngqa-bad8d.firebaseio.com',
-  projectId: 'ngqa-bad8d',
-  storageBucket: 'ngqa-bad8d.appspot.com',
-  messagingSenderId: '631789153871'
-};
-
-export type Key = string;
-
-export type LinkedItem<S> = {
-  [N in keyof S]?: Key | Directory<Key>;
-};
-
-export interface FirebaseItem {
-  key: Key;
-}
-
-export interface Directory<T> {
-  [key: string]: T;
-}
+import { FirebaseService } from '../firebase.service';
+import { Observable, Subject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { Directory, Key } from '@ngqa/models';
 
 export interface ReadOptions {
   sortBy?: any;
@@ -33,13 +11,11 @@ export interface ReadOptions {
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService<S> {
-  private app: app.App;
+export class FirebaseDatabaseService<S> {
 
-  constructor() {
-    console.log('INIT FB');
-    this.app = initializeApp(options, 'NGQA');
-  }
+  constructor(
+    private _firebaseService: FirebaseService
+  ) { }
 
   public getItem<P1 extends keyof S> (path: [P1], readOptions?: ReadOptions): Observable<S[P1]>;
   public getItem<
@@ -86,18 +62,6 @@ export class FirebaseService<S> {
 
   private getRef (path: Array<Key>): firebase.database.Reference {
     const fullPath = path.join('/');
-    return this.app.database().ref(fullPath);
+    return this._firebaseService.app().database().ref(fullPath);
   }
-}
-
-export function toList<T extends FirebaseItem>(): OperatorFunction<Directory<T>, Array<T>> {
-  return source => source.pipe(
-    map(directory => Object.keys(directory).map(key => {
-      const value = directory[key];
-      return {
-        key,
-        ...(value as Object)
-      } as T;
-    }
-  )));
 }
