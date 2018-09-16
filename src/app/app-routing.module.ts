@@ -8,17 +8,13 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       {
-        path: 'question',
-        loadChildren: './questions/question-details/question-details.module#QuestionDetailsModule'
-      },
-      {
-        path: 'questions',
-        loadChildren: './questions/questions/questions.module#QuestionsModule'
+        path: '',
+        pathMatch: 'full',
+        loadChildren: './home/home.module#HomeModule'
       },
       {
         path: '',
-        pathMatch: 'full',
-        redirectTo: 'questions'
+        loadChildren: './questions/questions.module#QuestionsModule'
       }
     ]
   }

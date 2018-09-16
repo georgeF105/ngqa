@@ -1,3 +1,23 @@
 <p>
   header works!
 </p>
+<ng-container
+  *ngIf="userState$ | async as userState">
+  <span
+    *ngIf="userState.user">Welcome {{userState.user.name}}</span>
+  <span
+    *ngIf="userState.isLoading && !userState.user">Logging in...</span>
+  <span
+    *ngIf="userState.isLoading && userState.user">Logging out...</span>
+  <button
+    *ngIf="!userState.isLoading && !userState.user"
+    (click)="logIn()">Log In</button>
+  <button
+    *ngIf="!userState.isLoading && userState.user"
+    (click)="logOut()">Log Out</button>
+  <a
+    routerLink="/questions">
+    Questions
+  </a>
+
+</ng-container>

@@ -12,6 +12,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ApolloModule, Apollo } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { NgrxCacheModule, NgrxCache } from 'apollo-angular-cache-ngrx';
+import { UserModule } from './user/user.module';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { NgrxCacheModule, NgrxCache } from 'apollo-angular-cache-ngrx';
     BrowserModule,
     AppRoutingModule,
     LayoutModule,
+    UserModule,
+    EffectsModule.forRoot([]),
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     HttpClientModule,
