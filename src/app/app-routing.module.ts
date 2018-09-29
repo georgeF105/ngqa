@@ -13,7 +13,7 @@ const routes: Routes = [
         loadChildren: './home/home.module#HomeModule'
       },
       {
-        path: '',
+        path: 'questions',
         loadChildren: './questions/questions.module#QuestionsModule'
       }
     ]

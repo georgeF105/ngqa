@@ -22,27 +22,29 @@ export interface NormalStore {
 
 export interface Question {
   key: Key;
-  question: string;
+  title: string;
+  body: string;
   answers: Array<Answer>;
   user: User;
 }
 
 export interface NormalQuestion {
   key: Key;
-  question: string;
+  title: string;
+  body: string;
   answers: Array<Key>;
   user: Key;
 }
 
 export interface Answer {
   key: Key;
-  answer: string;
+  body: string;
   user: User;
 }
 
 export interface NormalAnswer {
   key: Key;
-  answer: string;
+  body: string;
   user: Key;
 }
 

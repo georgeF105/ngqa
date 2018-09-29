@@ -6,6 +6,7 @@ import { GraphQLSchema } from 'graphql';
 const typeDefs = `
 type Question {
   key: String!
+  title: String!
   body: String!
   user: User
   answers: [Answer]

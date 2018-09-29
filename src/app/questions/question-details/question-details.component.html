@@ -1,4 +1,34 @@
 <div
+  class="container"
   *ngIf="question$ | async as question">
-  {{ question.body }}
+  <h1>{{ question.title }}</h1>
+  <p>
+    {{ question.body }}
+  </p>
+  <mat-card
+    *ngFor="let answer of question.answers">
+    <mat-card-content>
+      {{ answer.body }}
+    </mat-card-content>
+    <mat-card-actions>
+      {{ answer.user.name }}
+    </mat-card-actions>
+  </mat-card>
+  <form
+    (ngSubmit)="answerQuestion()"
+    class="questions-details_answer-form">
+    <mat-form-field
+      matTextareaAutosize="true"
+      class="questions-details_answer-input">
+      <textarea
+        [(ngModel)]="answer"
+        matInput
+        placeholder="answer question"
+        name="answer">
+      </textarea>
+    </mat-form-field>
+    <button
+      mat-button
+      type="submit">Answer</button>
+  </form>
 </div>

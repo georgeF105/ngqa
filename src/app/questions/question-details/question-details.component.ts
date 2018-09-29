@@ -10,6 +10,7 @@ const QUESTION_QUERY = gql`
   query CurrentQuestion($id: String!) {
   question (id: $id) {
     key
+    title
     body
     answers {
       key
@@ -33,6 +34,7 @@ const QUESTION_QUERY = gql`
 })
 export class QuestionDetailsComponent implements OnInit {
   public question$: Observable<Question>;
+  public answer: string;
 
   constructor(
     private _apollo: Apollo,
@@ -58,5 +60,9 @@ export class QuestionDetailsComponent implements OnInit {
       }),
       map(result => result.data.question)
     );
+  }
+
+  public answerQuestion () {
+    console.log('answer question', this.answer);
   }
 }
