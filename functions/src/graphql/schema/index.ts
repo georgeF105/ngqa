@@ -9,6 +9,7 @@ type Question {
   title: String!
   body: String!
   user: User
+  votes: Int
   answers: [Answer]
 }
 type Answer {
@@ -22,6 +23,10 @@ type User {
   name: String
   email: String
 }
+input AnswerInput {
+  body: String!
+  user: String!
+}
 # the schema allows the following query:
 type Query {
   questions: [Question]
@@ -30,12 +35,12 @@ type Query {
 # this schema allows the following mutation:
 type Mutation {
   upvoteAnswer (
-    answerId: Int!
+    answerId: String!
   ): Answer
   answerQuestion (
-    questionId: String!,
-    answer: String
-  ): Answer
+    questionKey: String!,
+    answer: AnswerInput!
+  ): Question
 }
 `;
 

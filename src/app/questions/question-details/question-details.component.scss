@@ -1,3 +1,17 @@
+.questions-details__answer-card {
+  margin: 1rem;
+}
+
+.questions-details__draft-answer-card {
+  margin: 1rem;
+  margin-top: 2rem;
+}
+
+.questions-details__answer-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .questions-details_answer-form {
   margin-top: 40px;
   width: 100%;

@@ -26,6 +26,7 @@ export interface Question {
   body: string;
   answers: Array<Answer>;
   user: User;
+  votes: number;
 }
 
 export interface NormalQuestion {
@@ -34,18 +35,21 @@ export interface NormalQuestion {
   body: string;
   answers: Array<Key>;
   user: Key;
+  votes: number;
 }
 
 export interface Answer {
   key: Key;
   body: string;
   user: User;
+  votes: number;
 }
 
 export interface NormalAnswer {
   key: Key;
   body: string;
   user: Key;
+  votes: number;
 }
 
 export interface User {

@@ -6,29 +6,85 @@
     {{ question.body }}
   </p>
   <mat-card
-    *ngFor="let answer of question.answers">
+    *ngFor="let answer of question.answers"
+    class="questions-details__answer-card">
+    <mat-card-header>
+      <button
+        mat-card-avatar
+        mat-icon-button>
+        <mat-icon>
+            perm_identity
+        </mat-icon>
+      </button>
+      <mat-card-title>Answer:</mat-card-title>
+      <mat-card-subtitle>{{ answer.user.name }}</mat-card-subtitle>
+    </mat-card-header>
     <mat-card-content>
-      {{ answer.body }}
+      <p>
+          {{ answer.body }}
+      </p>
     </mat-card-content>
-    <mat-card-actions>
-      {{ answer.user.name }}
+    <mat-card-actions
+      class="questions-details__answer-actions">
+      <button
+        mat-icon-button
+        color="primary">
+        <mat-icon
+          [matBadge]="answer.votes"
+          matBadgePosition="before"
+          matBadgeColor="accent">
+          thumb_up
+        </mat-icon>
+      </button>
     </mat-card-actions>
   </mat-card>
-  <form
-    (ngSubmit)="answerQuestion()"
-    class="questions-details_answer-form">
-    <mat-form-field
-      matTextareaAutosize="true"
-      class="questions-details_answer-input">
-      <textarea
-        [(ngModel)]="answer"
-        matInput
-        placeholder="answer question"
-        name="answer">
-      </textarea>
-    </mat-form-field>
-    <button
-      mat-button
-      type="submit">Answer</button>
-  </form>
+  <mat-card
+    *ngIf="draftAnswer$ | async as draftAnswer"
+    class="questions-details__draft-answer-card">
+    <mat-card-header>
+        <button
+          mat-card-avatar
+          mat-icon-button>
+          <mat-icon>
+              perm_identity
+          </mat-icon>
+        </button>
+        <mat-card-title>Your Answer:</mat-card-title>
+        <mat-card-subtitle>{{ draftAnswer.user.name }}</mat-card-subtitle>
+      </mat-card-header>
+    <mat-card-content>
+      <form
+        (ngSubmit)="answerQuestion(question.key, draftAnswer)"
+        class="questions-details_answer-form">
+        <mat-form-field
+          matTextareaAutosize="true"
+          class="questions-details_answer-input">
+          <textarea
+            [(ngModel)]="draftAnswer.body"
+            matInput
+            placeholder="Your answer here"
+            name="answer">
+          </textarea>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit">Answer</button>
+      </form>
+    </mat-card-content>
+    <mat-card-actions
+      class="questions-details__answer-actions">
+      <button
+        mat-icon-button
+        color="primary">
+        <mat-icon
+          [matBadge]="draftAnswer.votes"
+          matBadgePosition="before"
+          matBadgeColor="accent">
+          thumb_up
+        </mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+  
 </div>

@@ -1,6 +1,6 @@
 import { config } from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { Directory, FirebaseItem } from '../../models';
+import { Directory, FirebaseItem, Key } from '../../models';
 
 admin.initializeApp(config().firebase);
 
@@ -26,7 +26,17 @@ export function getList (path: Array<string>): Promise<Array<any>> {
   return getSnapshot(path).then(snapshot => toList(snapshot.val()));
 }
 
-function toList<T extends FirebaseItem> (map: Directory<T>): Array<T> {
+export function addItemToList (path: Array<string>, item: any): Promise<Key> {
+  const fullPath = path.join('/');
+  const key = admin.database().ref(fullPath).push(item).key;
+  const updates = {
+    [`${fullPath}/${key}`]: item 
+  };
+  return admin.database().ref().update(updates)
+    .then(() => key);
+}
+
+export function toList<T extends FirebaseItem> (map: Directory<T>): Array<T> {
   return Object.keys(map).map(key => {
     return {
       ...(map[key] as Object),

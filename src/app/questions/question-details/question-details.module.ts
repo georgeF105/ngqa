@@ -7,6 +7,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   imports: [
@@ -15,7 +17,9 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     MatCardModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatBadgeModule
   ],
   declarations: [QuestionDetailsComponent],
   exports: [QuestionDetailsComponent]
