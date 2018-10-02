@@ -7,7 +7,7 @@ const typeDefs = `
 type Question {
   key: String!
   title: String!
-  body: String!
+  body: String
   user: User
   votes: Int
   answers: [Answer]

@@ -3,7 +3,7 @@ import { Question, Answer } from '@ngqa/models';
 import { Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { map, switchMap, take, filter } from 'rxjs/operators';
+import { map, switchMap, take, filter, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { UserSelectors } from '../../user/user.selectors';
@@ -77,14 +77,15 @@ export class QuestionDetailsComponent implements OnInit {
     );
     return questionKey$.pipe(
       switchMap(key => {
-        return this._apollo.query<{ question: Question }>({
+        return this._apollo.watchQuery<{ question: Question }>({
           query: QUESTION_QUERY,
           variables: {
             id: key
           }
-        });
+        }).valueChanges;
       }),
-      map(result => result.data.question)
+      map(result => result.data.question),
+      tap(t => console.log('result', t))
     );
   }
 
@@ -98,6 +99,15 @@ export class QuestionDetailsComponent implements OnInit {
           body: answer.body,
           user: answer.user.key
         }
+      },
+      update: (store, { data: { answerQuestion } }) => {
+        store.writeQuery({
+          query: QUESTION_QUERY,
+          variables: {
+            id: answerQuestion.key
+          },
+          data: { question: answerQuestion }
+        });
       }
     }).subscribe(data => {
       console.log('mutate response', data);
