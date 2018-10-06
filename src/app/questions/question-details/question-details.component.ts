@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Question, Answer } from '@ngqa/models';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { map, switchMap, take, filter, startWith } from 'rxjs/operators';
+import { map, switchMap, take, filter } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { UserSelectors } from '../../user/user.selectors';
@@ -60,8 +60,6 @@ export class QuestionDetailsComponent implements OnInit {
   public answer: string;
   public draftAnswer$: Observable<Answer>;
 
-  private _updateQuery$ = new Subject<void>();
-
   constructor(
     private _apollo: Apollo,
     private _activatedRoute: ActivatedRoute,
@@ -77,11 +75,9 @@ export class QuestionDetailsComponent implements OnInit {
     const questionKey$ = this._activatedRoute.params.pipe(
       map(params => params.key)
     );
-    return combineLatest(
-      questionKey$,
-      this._updateQuery$.pipe(startWith(null))
-      ).pipe(
-        switchMap(([key]) => {
+
+    return questionKey$.pipe(
+        switchMap(key => {
           return this._apollo.watchQuery<{ question: Question }>({
             query: QUESTION_QUERY,
             variables: {
@@ -93,18 +89,33 @@ export class QuestionDetailsComponent implements OnInit {
       );
   }
 
-  public answerQuestion (questionKey: string, answer: Answer) {
+  public answerQuestion (question: Question, answer: Answer) {
     this._apollo.mutate({
       mutation: SUBMIT_ANSWER,
       variables: {
-        questionKey: questionKey,
+        questionKey: question.key,
         answer: {
           body: answer.body,
           user: answer.user.key
         }
       },
-      update: () => {
-        this._updateQuery$.next();
+      optimisticResponse: {
+        answerQuestion: {
+          ...question,
+          answers: [
+            ...question.answers,
+            answer
+          ]
+        }
+      },
+      update: (state, { data }) => {
+        state.writeQuery({
+          query: QUESTION_QUERY,
+          variables: {
+            id: question.key
+          },
+          data: { question: data.answerQuestion }
+        });
       }
     }).subscribe();
   }
@@ -115,10 +126,14 @@ export class QuestionDetailsComponent implements OnInit {
       take(1),
       map(userInfo => {
         return {
-          key: null,
-          user: userInfo.user,
+          key: 'temp-key',
+          user: {
+            ...userInfo.user,
+            __typename: 'User'
+          },
           body: '',
-          votes: 0
+          votes: 0,
+          __typename: 'Question'
         };
       })
     );
