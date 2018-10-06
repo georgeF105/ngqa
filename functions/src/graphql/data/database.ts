@@ -16,10 +16,16 @@ function getSnapshot (path: Array<string>): Promise<any> {
 }
 
 export function getItem (path: Array<string>): Promise<any> {
-  return getSnapshot(path).then(snapshot => ({
-    ...snapshot.val(),
-    key: snapshot.key
-  }));
+  return getSnapshot(path).then(snapshot => {
+    const item = snapshot.val();
+    if (!item || !Object.keys(item).length) {
+      throw new Error(`cant find item at ${path.join('/')}`);
+    }
+    return {
+      ...item,
+      key: snapshot.key
+    };
+  });
 }
 
 export function getList (path: Array<string>): Promise<Array<any>> {
