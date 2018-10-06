@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Question, Answer } from '@ngqa/models';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { map, switchMap, take, filter, tap } from 'rxjs/operators';
+import { map, switchMap, take, filter, startWith } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { UserSelectors } from '../../user/user.selectors';
@@ -60,6 +60,8 @@ export class QuestionDetailsComponent implements OnInit {
   public answer: string;
   public draftAnswer$: Observable<Answer>;
 
+  private _updateQuery$ = new Subject<void>();
+
   constructor(
     private _apollo: Apollo,
     private _activatedRoute: ActivatedRoute,
@@ -75,22 +77,23 @@ export class QuestionDetailsComponent implements OnInit {
     const questionKey$ = this._activatedRoute.params.pipe(
       map(params => params.key)
     );
-    return questionKey$.pipe(
-      switchMap(key => {
-        return this._apollo.watchQuery<{ question: Question }>({
-          query: QUESTION_QUERY,
-          variables: {
-            id: key
-          }
-        }).valueChanges;
-      }),
-      map(result => result.data.question),
-      tap(t => console.log('result', t))
-    );
+    return combineLatest(
+      questionKey$,
+      this._updateQuery$.pipe(startWith(null))
+      ).pipe(
+        switchMap(([key]) => {
+          return this._apollo.watchQuery<{ question: Question }>({
+            query: QUESTION_QUERY,
+            variables: {
+              id: key
+            }
+          }).valueChanges;
+        }),
+        map(result => result.data.question)
+      );
   }
 
   public answerQuestion (questionKey: string, answer: Answer) {
-    console.log('answer question', answer);
     this._apollo.mutate({
       mutation: SUBMIT_ANSWER,
       variables: {
@@ -100,20 +103,10 @@ export class QuestionDetailsComponent implements OnInit {
           user: answer.user.key
         }
       },
-      update: (store, { data: { answerQuestion } }) => {
-        store.writeQuery({
-          query: QUESTION_QUERY,
-          variables: {
-            id: answerQuestion.key
-          },
-          data: { question: answerQuestion }
-        });
+      update: () => {
+        this._updateQuery$.next();
       }
-    }).subscribe(data => {
-      console.log('mutate response', data);
-    }, error => console.log('error', error),
-    () => console.log('complete')
-  );
+    }).subscribe();
   }
 
   private getDraftAnswer (): Observable<Answer> {

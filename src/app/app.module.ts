@@ -49,7 +49,9 @@ export class AppModule {
 
     apollo.create({
       link: http,
-      cache: ngrxCache.create()
+      cache: ngrxCache.create({
+        dataIdFromObject: cacheItem => (<any>cacheItem).key
+      })
     });
   }
 }
