@@ -11,10 +11,11 @@ import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { ApolloModule, Apollo } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { NgrxCacheModule, NgrxCache } from 'apollo-angular-cache-ngrx';
+import { NgrxCacheModule } from 'apollo-angular-cache-ngrx';
 import { UserModule } from './user/user.module';
 import { EffectsModule } from '@ngrx/effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 @NgModule({
   declarations: [
@@ -40,8 +41,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export class AppModule {
   constructor(
     apollo: Apollo,
-    httpLink: HttpLink,
-    ngrxCache: NgrxCache
+    httpLink: HttpLink
   ) {
     const http = httpLink.create({
       uri: environment.graphqlUri
@@ -49,9 +49,7 @@ export class AppModule {
 
     apollo.create({
       link: http,
-      cache: ngrxCache.create({
-        dataIdFromObject: cacheItem => (<any>cacheItem).key
-      })
+      cache: new InMemoryCache()
     });
   }
 }
