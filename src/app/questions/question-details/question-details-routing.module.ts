@@ -4,7 +4,7 @@ import { QuestionDetailsComponent } from './question-details.component';
 
 const routes: Routes = [
   {
-    path: ':key',
+    path: '',
     component: QuestionDetailsComponent
   }
 ];

@@ -1,23 +1,39 @@
-<p>
-  header works!
-</p>
-<ng-container
-  *ngIf="userState$ | async as userState">
-  <span
-    *ngIf="userState.user">Welcome {{userState.user.name}}</span>
-  <span
-    *ngIf="userState.isLoading && !userState.user">Logging in...</span>
-  <span
-    *ngIf="userState.isLoading && userState.user">Logging out...</span>
-  <button
-    *ngIf="!userState.isLoading && !userState.user"
-    (click)="logIn()">Log In</button>
-  <button
-    *ngIf="!userState.isLoading && userState.user"
-    (click)="logOut()">Log Out</button>
-  <a
-    routerLink="/questions">
-    Questions
-  </a>
-
-</ng-container>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>NGQA</span>
+    <span
+      class="spacer"></span>
+    <ng-container
+      *ngIf="userState$ | async as userState">
+      <span
+        *ngIf="userState.user">{{userState.user.name}}</span>
+      <button
+        *ngIf="!userState.isLoading && !userState.user"
+        mat-stroked-button
+        (click)="logIn()">Log In</button>
+      <button
+        *ngIf="userState.isLoading && !userState.user"
+        mat-stroked-button>
+        <mat-progress-spinner
+          class="spinner"
+          color="accent"
+          diameter="16"
+          mode="indeterminate">
+      </mat-progress-spinner>
+      </button>
+    </ng-container>
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu
+      #menu="matMenu">
+      <button
+        mat-menu-item
+        (click)="logOut()">
+        logout
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>

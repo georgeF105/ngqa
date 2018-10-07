@@ -8,11 +8,11 @@ const routes: Routes = [
     canActivate: [AuthenticatedGuard],
     children: [
       {
-        path: 'question',
+        path: ':key',
         loadChildren: './question-details/question-details.module#QuestionDetailsModule'
       },
       {
-        path: 'questions',
+        path: '',
         loadChildren: '../questions/questions/questions.module#QuestionsModule'
       }
     ]

@@ -1,13 +1,22 @@
-<h3>Questions</h3>
 <div
-  *ngIf="questions$ | async as questions">
-  <ul>
-    <li
-      *ngFor="let question of questions">
-      <a
-        [routerLink]="['/question', question.key]">
-        {{question.body}} ({{question.user.name}})
-      </a>
-    </li>
-  </ul>
+  *ngIf="questions$ | async as questions"
+  class="container">
+  <h3>Questions</h3>
+  <mat-card
+    *ngFor="let question of questions"
+    [routerLink]="['/questions', question.key]"
+    [matBadge]="question.answers.length"
+    matBadgePosition="before"
+    class="questions_card">
+    <mat-card-header>
+      <mat-card-title>
+          {{ question.title }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ question.body }}
+      </p>
+    </mat-card-content>
+  </mat-card>
 </div>

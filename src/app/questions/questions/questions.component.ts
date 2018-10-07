@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 const QUESTIONS_QUERY = gql`{
   questions {
     key
+    title
     body
     answers {
       key
